@@ -13,7 +13,7 @@ router.get("/", async (req, res, next) => {
   try {
     const contacts = await contactsOperations.listContacts();
     return res.json({
-      status: "succes",
+      status: "success",
       code: 200,
       data: { result: contacts },
     });
@@ -30,7 +30,7 @@ router.get("/:contactId", async (req, res, next) => {
       throw createError(404, `Contacts with ${contactId} not found`);
     }
     return res.json({
-      status: "succes",
+      status: "success",
       code: 200,
       data: { result: contacts },
     });
@@ -43,15 +43,15 @@ router.post("/", async (req, res, next) => {
   try {
     const { error } = productSchema.validate(req.body);
     if (error) {
-      throw createError(400, "missing required name field");
+      throw createError(400, `missing required ${error.message}`);
     }
-    const result = contactsOperations.addContact(req.body);
+    const result = await contactsOperations.addContact(req.body);
     console.log("result", result);
     res.status(201).json({
-      status: "succes",
+      status: "success",
       code: 201,
       data: {
-        result: req.body,
+        result,
       },
     });
   } catch (error) {
@@ -60,23 +60,44 @@ router.post("/", async (req, res, next) => {
 });
 
 router.delete("/:contactId", async (req, res, next) => {
-  res.json({ message: "template message" });
+  try {
+    const { contactId } = req.params;
+    const contact = await contactsOperations.removeContact(contactId);
+    if (!contact) {
+      throw createError(404, `${contactId} not found`);
+    }
+    res.json({
+      status: "success",
+      message: "contact deleted",
+      code: 200,
+      data: {
+        result: contact,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.put("/:contactId", async (req, res, next) => {
   try {
     const { error } = productSchema.validate(req.body);
     if (error) {
-      throw createError(400, "missing fields");
+      throw createError(400, `missing failed ${error.message}`);
     }
+
     const { contactId } = req.params;
     const result = await contactsOperations.updateContactById(
       contactId,
       req.body
     );
+    console.log("result", result);
+    if (!result) {
+      throw createError(404, `Not found ${contactId}`);
+    }
     return res.json({ status: "succes", code: 200, data: { result } });
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 });
 

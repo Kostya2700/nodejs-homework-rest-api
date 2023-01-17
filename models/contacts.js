@@ -34,8 +34,8 @@ const addContact = async (body) => {
     const addContact = { id: idContacts(), ...body };
     contacts.push(addContact);
     await fs.writeFile(contactsPath, JSON.stringify(contacts));
-    const newContacts = await fs.readFile(contactsPath, "utf-8");
-    return newContacts;
+    await fs.readFile(contactsPath, "utf-8");
+    return addContact;
   } catch (error) {
     console.log("error", error);
   }
@@ -45,10 +45,17 @@ const removeContact = async (contactId) => {
   try {
     const data = await fs.readFile(contactsPath, "utf-8");
     const contacts = JSON.parse(data);
-    const contact = contacts.filter((item) => item.id !== contactId);
+    const idx = contacts.findIndex((item) => item.id === contactId);
+    if (idx === -1) {
+      return null;
+    }
+    const contact = contacts.filter((item) => {
+      return item.id !== contactId;
+    });
+    console.log("contact", contacts[idx]);
     await fs.writeFile(contactsPath, JSON.stringify(contact));
-    const deleteContacts = await fs.readFile(contactsPath, "utf-8");
-    console.table(JSON.parse(deleteContacts));
+    await fs.readFile(contactsPath, "utf-8");
+    return contacts[idx];
   } catch (error) {
     console.log("error", error);
   }
@@ -60,12 +67,15 @@ const updateContactById = async (contactId, body) => {
     const contactsIndex = allContacts.findIndex(
       (contact) => contact.id === contactId
     );
-    if (contactsIndex !== -1) {
-      allContacts[contactsIndex] = { id: contactId, ...body };
-
-      await fs.writeFile(contactsPath, JSON.stringify(allContacts));
-      return allContacts[contactsIndex];
+    console.log("contactsIndex", contactsIndex);
+    if (contactsIndex === -1) {
+      return null;
     }
+
+    allContacts[contactsIndex] = { id: contactId, ...body };
+
+    await fs.writeFile(contactsPath, JSON.stringify(allContacts));
+    return allContacts[contactsIndex];
   } catch (error) {
     console.log("error", error);
   }
