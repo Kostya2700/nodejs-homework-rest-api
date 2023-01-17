@@ -2,7 +2,6 @@ const { v4: idContacts } = require("uuid");
 const fs = require("fs/promises");
 const path = require("path");
 const contactsPath = path.join(__dirname, "contacts.json");
-console.log("contactsPath", contactsPath);
 
 const listContacts = async () => {
   try {
@@ -28,6 +27,20 @@ const getContactById = async (contactId) => {
   }
 };
 
+const addContact = async (body) => {
+  try {
+    const data = await fs.readFile(contactsPath, "utf-8");
+    const contacts = JSON.parse(data);
+    const addContact = { id: idContacts(), ...body };
+    contacts.push(addContact);
+    await fs.writeFile(contactsPath, JSON.stringify(contacts));
+    const newContacts = await fs.readFile(contactsPath, "utf-8");
+    return newContacts;
+  } catch (error) {
+    console.log("error", error);
+  }
+};
+
 const removeContact = async (contactId) => {
   try {
     const data = await fs.readFile(contactsPath, "utf-8");
@@ -41,33 +54,21 @@ const removeContact = async (contactId) => {
   }
 };
 
-const addContact = async (body) => {
-  try {
-    const data = await fs.readFile(contactsPath, "utf-8");
-    const contacts = JSON.parse(data);
-    const addContact = { ...body, id: idContacts() };
-    contacts.push(addContact);
-    await fs.writeFile(contactsPath, JSON.stringify(contacts));
-    const newContacts = await fs.readFile(contactsPath, "utf-8");
-    console.table(JSON.parse(newContacts));
-  } catch (error) {
-    console.log("error", error);
-  }
-};
-
-const updateContact = async (contactId, body) => {
+const updateContactById = async (contactId, body) => {
   try {
     const allContacts = await listContacts();
     const contactsIndex = allContacts.findIndex(
       (contact) => contact.id === contactId
     );
     if (contactsIndex !== -1) {
-      allContacts[contactsIndex].email = body.email;
-      allContacts[contactsIndex].name = body.name;
+      allContacts[contactsIndex] = { id: contactId, ...body };
 
-      await fs.writeFile(contactsPath, JSON.stringify(allContacts, null, 2));
+      await fs.writeFile(contactsPath, JSON.stringify(allContacts));
+      return allContacts[contactsIndex];
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log("error", error);
+  }
 };
 
 module.exports = {
@@ -75,5 +76,5 @@ module.exports = {
   getContactById,
   removeContact,
   addContact,
-  updateContact,
+  updateContactById,
 };
