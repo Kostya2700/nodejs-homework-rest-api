@@ -52,7 +52,6 @@ const removeContact = async (contactId) => {
     const contact = contacts.filter((item) => {
       return item.id !== contactId;
     });
-    console.log("contact", contacts[idx]);
     await fs.writeFile(contactsPath, JSON.stringify(contact));
     await fs.readFile(contactsPath, "utf-8");
     return contacts[idx];
@@ -67,7 +66,6 @@ const updateContactById = async (contactId, body) => {
     const contactsIndex = allContacts.findIndex(
       (contact) => contact.id === contactId
     );
-    console.log("contactsIndex", contactsIndex);
     if (contactsIndex === -1) {
       return null;
     }
