@@ -1,7 +1,8 @@
 const createError = require("http-errors");
 // const contactsOperations = require("../../models/contacts");
-const contactsSchema = require("../../schema");
 const Contact = require("../../models/contact");
+const { contactsSchema } = require("../../schema");
+
 const addContacts = async (req, res, next) => {
   try {
     const { error } = contactsSchema.validate(req.body);

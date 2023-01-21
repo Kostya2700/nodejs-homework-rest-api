@@ -1,10 +1,9 @@
 const createError = require("http-errors");
+const { updateFavoriteContact } = require("../../schema");
 const Contact = require("../../models/contact");
-
-const { contactsSchema } = require("../../schema");
-const updateContacts = async (req, res, next) => {
+const updateStatusContact = async (req, res, next) => {
   try {
-    const { error } = contactsSchema.validate(req.body);
+    const { error } = updateFavoriteContact.validate(req.body);
     if (error) {
       throw createError(400, `missing failed ${error.message}`);
     }
@@ -21,4 +20,4 @@ const updateContacts = async (req, res, next) => {
     next(err);
   }
 };
-module.exports = updateContacts;
+module.exports = updateStatusContact;
