@@ -7,7 +7,6 @@ const updateStatusContact = async (req, res, next) => {
     if (error) {
       throw createError(400, `missing failed ${error.message}`);
     }
-
     const { contactId } = req.params;
     const result = await modelContact.Contact.findByIdAndUpdate(
       contactId,

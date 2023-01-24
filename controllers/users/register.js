@@ -20,7 +20,7 @@ const register = async (req, res, next) => {
       subscription,
     });
     res.status(201).json({
-      status: "succes",
+      status: "success",
       code: 201,
       data: {
         email,

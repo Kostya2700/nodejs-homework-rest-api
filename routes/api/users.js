@@ -1,7 +1,6 @@
 const express = require("express");
 const { users } = require("../../controllers");
 const auth = require("../../middleware/auth");
-// const isValidId = require("../../midleware/helpers");
 
 const router = express.Router();
 
