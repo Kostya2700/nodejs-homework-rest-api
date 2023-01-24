@@ -1,5 +1,5 @@
 const createError = require("http-errors");
-const Contact = require("../../models/contact");
+const { modelContact } = require("../../models");
 
 const { contactsSchema } = require("../../schema");
 const updateContacts = async (req, res, next) => {
@@ -10,7 +10,7 @@ const updateContacts = async (req, res, next) => {
     }
 
     const { contactId } = req.params;
-    const result = await Contact.findByIdAndUpdate(contactId, req.body, {
+    const result = await modelContact.Contact.findByIdAndUpdate(contactId, req.body, {
       new: true,
     });
     if (!result) {
