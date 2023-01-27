@@ -16,7 +16,6 @@ const register = async (req, res, next) => {
       throw createError(409, `Email in use ${email}`);
     }
     const avatarURL = gravatar.url(email);
-    console.log("avatarURL", avatarURL);
 
     const hashPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
     const result = await modelUser.User.create({
