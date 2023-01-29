@@ -19,6 +19,10 @@ const login = async (req, res, next) => {
     if (!passCompare) {
       throw createError(401, "Password is wrong");
     }
+
+    if (!user.verify) {
+      throw createError(400, "Email not verify");
+    }
     const payload = { id: user._id };
     const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "1h" });
     await modelUser.User.findByIdAndUpdate(user._id, { token });
