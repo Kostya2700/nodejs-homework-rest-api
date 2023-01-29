@@ -5,10 +5,11 @@ const verifyEmail = async (req, res, next) => {
   try {
     const { verificationToken } = req.params;
     const user = await modelUser.User.findOne({ verificationToken });
+
     if (!user) {
       throw createHttpError(404, "User not found");
     }
-    await modelUser.User.findByIdAndRemove(user._id, {
+    await modelUser.User.findByIdAndUpdate(user._id, {
       verify: true,
       verificationToken: null,
     });

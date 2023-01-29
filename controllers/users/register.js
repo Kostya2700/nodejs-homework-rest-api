@@ -20,6 +20,7 @@ const register = async (req, res, next) => {
 
     const hashPassword = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
     const verificationToken = uuidv4();
+
     const result = await modelUser.User.create({
       email,
       password: hashPassword,
@@ -27,10 +28,11 @@ const register = async (req, res, next) => {
       avatarURL,
       verificationToken,
     });
+
     const mail = {
       to: email,
       subject: "Підтвердження реєстрації",
-      html: `<a href="http://localhost:3000/api/users/verify/${verificationToken} target="_blank">Підтвердіть реєстрацію</a>`,
+      html: `<a href="http://localhost:3000/api/users/verify/${verificationToken}">Підтвердіть реєстрацію</a>`,
     };
     await sendEmail(mail);
     res.status(201).json({

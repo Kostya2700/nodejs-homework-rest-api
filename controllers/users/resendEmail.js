@@ -20,12 +20,12 @@ const resendEmail = async (req, res, next) => {
     const mail = {
       to: email,
       subject: "Підтвердження реєстрації",
-      html: `<a href="http://localhost:3000/api/users/verify/${user.verificationToken} target="_blank">Підтвердіть реєстрацію</a>`,
+      html: `<a href="http://localhost:3000/api/users/verify/${user.verificationToken}">Підтвердіть реєстрацію</a>`,
     };
+    await sendEmail(mail);
     res.json({
       message: "Verification email sent",
     });
-    await sendEmail(mail);
   } catch (error) {
     next(error);
   }
